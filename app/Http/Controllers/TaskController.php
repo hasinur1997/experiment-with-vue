@@ -2,28 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskCreated;
 use App\Project;
+use App\Task;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class TaskController extends Controller
 {
-    public function __construct()
-    {
-        // $this->authorize('view');    
-    }
-    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Project $project)
     {
-        $projects = auth()->user()->projects;
-
-        return view('projects.index', [
-            'projects'  =>  $projects
-        ]);
+        
+        return $project->tasks;
     }
 
     /**
@@ -33,7 +27,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -44,45 +38,33 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate( $request, [
-            'name'          => 'required',
-            'description'   => 'required'
+        $task = Task::create([
+            'name'  =>  $request->name,
+            'user_id'   =>  auth()->id(),
+            'project_id' => $request->project_id
         ]);
 
-        $project = Project::create( [
-            'name'          => $request->name,
-            'description'   => $request->description
-        ] );
-
-        return $project;
+        TaskCreated::dispatch($task);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show(Task $task)
     {
-        $this->authorize('view', $project);
-        return view('projects.show', [
-            'project'   => $project
-        ]);
-    }
-
-    public function getTasks(Project $project)
-    {
-        return $project->tasks;
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit(Task $task)
     {
         //
     }
@@ -91,10 +73,10 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $project
+     * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Task $task)
     {
         //
     }
@@ -102,10 +84,10 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $project)
+    public function destroy(Task $task)
     {
         //
     }

@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
-        Welcome To Our App !
+        <h2>{{$project->name}}</h2>
+        <task :projectid="{{ $project->id }}"></task>
     </div>
 @endsection

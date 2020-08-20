@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-
+use App\Project;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('tasks.{project}', function ($user, Project $project) {
+    if ($project->users->contains($user)) {
+        return [
+            'name'  =>  $user->name
+        ];
+    }
 });
